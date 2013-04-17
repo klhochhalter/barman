@@ -18,7 +18,7 @@
 ''' This module represents a backup. '''
 
 from barman import xlog, _pretty_size, version
-from barman.command_wrappers import RsyncPgData, Command
+from barman.command_wrappers import RsyncPgData, RsyncPgDataRemote, Command
 from barman.compression import CompressionManager, CompressionIncompatibility
 from glob import glob
 import ast
@@ -845,12 +845,18 @@ class BackupManager(object):
         :param backup_info: the backup information structure
         '''
         backup_dest = os.path.join(backup_info.get_basebackup_directory(), 'pgdata')
-        rsync = RsyncPgData(ssh=self.server.ssh_command, ssh_options=self.server.ssh_options)
-        retval = rsync(':%s/' % backup_info.pgdata, backup_dest)
+        if self.server.basebackups_method == 'remote_rsync':
+            rsync = RsyncPgDataRemote(server=self.config.name, user=self.server.ssh_user)
+            source = "%s/" % (backup_info.pgdata)
+            destination = "%s/%s/%s/" % (self.server.basebackups_rsync_uri, backup_info.backup_id, 'pgdata')
+            retval = rsync(source, destination)
+        else:
+            rsync = RsyncPgData(ssh=self.server.ssh_command, ssh_options=self.server.ssh_options)
+            retval = rsync(':%s/' % backup_info.pgdata, backup_dest)
         if retval not in (0, 24):
             msg = "ERROR: data transfer failure"
             _logger.exception(msg)
-            raise Exception(msg)
+            raise Exception(retval)
 
         # Copy configuration files (if not inside PGDATA)
         self.current_action = "copying configuration files"

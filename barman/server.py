@@ -51,6 +51,9 @@ class Server(object):
         self.backup_manager = BackupManager(self)
         self.configuration_files = None
         self.enforce_retention_policies = False
+        self.ssh_user = config.ssh_user
+        self.basebackups_rsync_uri = config.basebackups_rsync_uri
+        self.basebackups_method = config.basebackups_method
         
         # Set minimum redundancy (default 0)
         if self.config.minimum_redundancy.isdigit():

@@ -23,6 +23,7 @@ import signal
 import subprocess
 import os
 import logging
+from fabric import api as fab
 
 _logger = logging.getLogger(__name__)
 
@@ -142,4 +143,32 @@ class RsyncPgData(Rsync):
                    '--exclude=/postmaster.pid'
                    ] + args
         Rsync.__init__(self, rsync, options, ssh, ssh_options, debug)
+
+class Ssh(object):
+    ''' Use ssh via fabric to run a remote command.
+    '''
+    def __init__(self, server=None, user=None, port=22, debug=False):
+        self.debug = debug
+        fab.env.host_string = "%s@%s:%s" % (user, server, port)
+        fab.env.eagerly_disconnect = True
+        fab.env.disable_known_hosts = True
+    def run(self, command):
+        result = fab.run(command, quiet=True)
+        if result.failed:
+            return result.stdout
+        else:
+            return result.return_code
+
+class RsyncPgDataRemote(Ssh):
+    '''rsync pgdata from a remote host'''
+    def __init__(self, server=None, user=None, debug=False):
+        Ssh.__init__(self, server, user)
+    def __call__(self, *args):
+        options = ('rsync', '-rLKpts', '--delete-excluded',
+                   '--inplace', '--exclude=/pg_xlog/*',
+                   '--exclude=/pg_log/*',
+                   '--exclude=/postmaster.pid'
+                   ) + args
+        command = " ".join(options)
+        return Ssh.run(self, command)
 

@@ -417,7 +417,7 @@ def get_server_list(args):
 
 def parse_backup_id(server, args):
     ''' Parses special backup IDs such as latest, oldest, etc. '''
-    if args.backup_id in ('latest', 'last'):
+    if args.backup_id in ('latest', 'last', 'newest', 'current'):
         backup_id = server.get_last_backup()
     elif args.backup_id in ('oldest', 'first'):
         backup_id = server.get_first_backup()

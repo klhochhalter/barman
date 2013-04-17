@@ -16,12 +16,12 @@ Release:	z1%{?dist}
 License:	GPLv3
 Group:		Applications/Databases
 Url:		http://www.pgbarman.org/
-Source0:    zonar-barman-${version}.tar.gz
+Source0:    zonar-barman-%{version}.tar.gz
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot-%(%{__id_u} -n)
 BuildArch:	noarch
 Vendor:		2ndQuadrant Italia (Devise.IT S.r.l.) <info@2ndquadrant.it>
 BuildRequires: zonar-python%{pybasever}
-Requires:   zonar-python%{pybasever}, zonar-python-psycopg%{pybasever}, zonar-python-argh%{pybasever} >= 0.21.2, zonar-python-argcomplete%{pybasever}, zonar-python-dateutil%{pybasever}
+Requires:   zonar-python%{pybasever}, zonar-python-psycopg%{pybasever}, zonar-python-argh%{pybasever} >= 0.21.2, zonar-python-argcomplete%{pybasever}, zonar-python-dateutil%{pybasever}, zonar-python-fabric%{pybasever}
 Provides:   zonar-barman%{pybasever}
 
 %description
@@ -49,14 +49,20 @@ cat > barman.logrotate << EOF
     create 0600 barman barman
 }
 EOF
+gzip doc/barman.1
+gzip doc/barman.5
 
 %install
-%{__python} setup.py install -O1 --skip-build --root %{buildroot}
+%{__python} setup.py install -O1 --skip-build --root %{buildroot} --record=INSTALLED_FILES
 mkdir -p %{buildroot}%{_sysconfdir}/bash_completion.d
 mkdir -p %{buildroot}%{_sysconfdir}/cron.d/
 mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d/
-mkdir -p %{buildroot}/var/lib/barman
-mkdir -p %{buildroot}/var/log/barman
+mkdir -p %{buildroot}/var/lib/barman/
+mkdir -p %{buildroot}/var/log/barman/
+mkdir -p %{buildroot}%{_mandir}/man1/
+mkdir -p %{buildroot}%{_mandir}/man5/
+install -pm 644 doc/barman.1.gz %{buildroot}%{_mandir}/man1/barman.1.gz
+install -pm 644 doc/barman.5.gz %{buildroot}%{_mandir}/man5/barman.5.gz
 install -pm 644 doc/barman.conf %{buildroot}%{_sysconfdir}/barman.conf
 install -pm 644 scripts/barman.bash_completion %{buildroot}%{_sysconfdir}/bash_completion.d/barman
 install -pm 644 barman.cron %{buildroot}%{_sysconfdir}/cron.d/barman
@@ -66,12 +72,9 @@ touch %{buildroot}/var/log/barman/barman.log
 %clean
 rm -rf %{buildroot}
 
-%files
+%files -f INSTALLED_FILES
 %defattr(-,root,root)
 %doc INSTALL NEWS README
-%{python_sitelib}/%{original_name}-%{version}-py%{pybasever}.egg-info/
-%{python_sitelib}/%{original_name}/
-%{_bindir}/%{original_name}
 %doc %{_mandir}/man1/%{original_name}.1.gz
 %doc %{_mandir}/man5/%{original_name}.5.gz
 %config(noreplace) %{_sysconfdir}/bash_completion.d/
@@ -86,9 +89,13 @@ rm -rf %{buildroot}
 # puppet should handle creating the barman user and group,
 # including home directory, .pgpass, etc. Just make sure the
 # user exists.
-getent passwd barman || :
-echo "barman user does not exist."
-exit 1 ||:
+getent passwd barman > /dev/null || exit 1
+
+%post
+ln -s %{zonar_python_installs}/python-%{pybasever}/bin/barman %{_bindir}/barman
+
+%postun
+rm %{_bindir}/barman
 
 %changelog
 * Wed Apr 17 2013 - Kevin Hochhalter <kevin.hochhalter@zonarsystems.com> 1.2.1-z1

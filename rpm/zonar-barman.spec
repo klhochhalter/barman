@@ -99,7 +99,7 @@ rm %{_bindir}/barman
 
 %changelog
 * Wed Apr 17 2013 - Kevin Hochhalter <kevin.hochhalter@zonarsystems.com> 1.2.1-z1
-- New release z1.2.1
+- New Zonar release 1.2.1
 - Use fabric for remote commands.
 
 * Thu Jan 31 2013 - Marco Neciarini <marco.nenciarini@2ndquadrant.it> 1.2.0-1

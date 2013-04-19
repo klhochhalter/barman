@@ -49,8 +49,6 @@ cat > barman.logrotate << EOF
     create 0600 barman barman
 }
 EOF
-gzip doc/barman.1
-gzip doc/barman.5
 
 %install
 %{__python} setup.py install -O1 --skip-build --root %{buildroot} --record=INSTALLED_FILES
@@ -61,6 +59,8 @@ mkdir -p %{buildroot}/var/lib/barman/
 mkdir -p %{buildroot}/var/log/barman/
 mkdir -p %{buildroot}%{_mandir}/man1/
 mkdir -p %{buildroot}%{_mandir}/man5/
+gzip doc/barman.1
+gzip doc/barman.5
 install -pm 644 doc/barman.1.gz %{buildroot}%{_mandir}/man1/barman.1.gz
 install -pm 644 doc/barman.5.gz %{buildroot}%{_mandir}/man5/barman.5.gz
 install -pm 644 doc/barman.conf %{buildroot}%{_sysconfdir}/barman.conf

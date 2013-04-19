@@ -141,6 +141,21 @@ Policy for retention of archive logs (WAL files)\&. Currently only "MAIN" is ava
 .RS 4
 Currently only "auto" is implemented\&.
 .RE
+.PP
+\fBbasebackups_method (Zonar only)\fR
+.RS 4
+Method used to perform a base backup, specifically how files are rsynced\&. Possible options are "remote_rsync" and "local_rsync_ssh"\&. "remote_rsync" will cause barman to login on the server as the configured ssh user, and rsync from the server to the configured rsync uri\&. The default is "local_rsync_ssh", which is the traditional barman method, just using rsync over ssh to rsync files to the server where barman is running\&. Think of "remote_rsync_ssh" as "push", and "local_rsync_ssh" as "pull"\&.
+.RE
+.PP
+\fBbasebackups_rsync_uri (Zonar only)\fR
+.RS 4
+The rsync uri to use when performing a "remote_rsync" base backup\&. Use the form "rsync://<hostname>/<module>\&.
+.RE
+.PP
+\fBssh_user (Zonar only)\fR
+.RS 4
+The user that barman will use to login on the remote database server when performing a "remote_rsync" basebackup\&. The default is postgres\&.
+.RE
 .SH "HOOK SCRIPTS"
 .sp
 The script definition is passed to a shell and can return any exit code\&.
@@ -230,6 +245,15 @@ minimum_redundancy = 1
 
 ; Retention policy (based on redundancy)
 retention_policy = REDUNDANCY 2
+
+; Basebackup method
+basebackups_method = remote_rsync
+
+; Where to rsync the base backup if using remote_rsync
+basebackups_rsync_uri = rsync://servername/modulename
+
+; User to login as when using remote_rsync
+ssh_user = postgres
 .fi
 .if n \{\
 .RE

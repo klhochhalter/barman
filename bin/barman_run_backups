@@ -97,7 +97,7 @@ for SERVER in ${SERVERS[*]}; do
     #
     # Note: We don't use the backup_end_time, since the formatting could change in future
     # barman versions. The backup_id should be consistent, so use it.
-    
+
     read -a LAST_BACKUP_TIMESTAMP <<< \
         `echo $LAST_BACKUP \
         | awk '{print $2}' \

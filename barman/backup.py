@@ -448,6 +448,21 @@ class BackupManager(object):
         '''
         Performs a backup for the server
         '''
+        if os.path.exists(self.config.lock_file):
+            msg = "Lock file %s exists for server %s. Aborting backup" % (self.config.lock_file, self.config.name)
+            _logger.warning(msg)
+            yield msg
+            raise SystemExit(1)
+
+        _logger.debug('Creating lock file %s for server %s' % (self.config.lock_file, self.config.name))
+        try:
+            open(self.config.lock_file,'a').close()
+        except:
+            msg = "Could not create lock file %s for server %s" % (self.config.lock_file, self.config.name)
+            _logger.error(msg)
+            yield msg
+            raise OSError
+
         _logger.debug("initialising backup information")
         backup_stamp = datetime.datetime.now()
         self.current_action = "starting backup"
@@ -519,6 +534,10 @@ class BackupManager(object):
 
             # Run the post-backup-script if present.
             self.run_post_backup_script(backup_info)
+
+            # Remove the lock file.
+            if os.path.exists(self.config.lock_file):
+                os.remove(self.config.lock_file)
 
 
     def recover(self, backup, dest, tablespaces, target_tli, target_time, target_xid, exclusive, remote_command):

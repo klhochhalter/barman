@@ -74,10 +74,11 @@ class Server(object):
     def _init_retention_policies(self):
         
         # Set retention policy mode
-        if self.config.retention_policy_mode != 'auto':
-            _logger.warning('Unsupported retention_policy_mode "%s" for server "%s" (fallback to "auto")'
+        # XXX Make sure this defaults to "None".
+        if (self.config.retention_policy_mode and self.config.retention_policy_mode != 'auto'):
+            _logger.warning('Unsupported retention_policy_mode "%s" for server "%s" (fallback to "None")'
                             % (self.config.retention_policy_mode, self.config.name))
-            self.config.retention_policy_mode = 'auto'
+            self.config.retention_policy_mode = None
 
         # If retention_policy is present, enforce them        
         if self.config.retention_policy:

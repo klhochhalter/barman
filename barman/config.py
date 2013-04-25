@@ -58,7 +58,6 @@ class Server(object):
         'wals_directory': r'%(backup_directory)s/wals',
         'incoming_wals_directory': r'%(backup_directory)s/incoming',
         'lock_file': r'%(backup_directory)s/%(name)s.lock',
-        'retention_policy_mode' : 'auto',
         'wal_retention_policy' : 'main',
         'minimum_redundancy' : '0',
         'basebackups_method' : 'local_rsync_ssh',
@@ -140,7 +139,7 @@ class Config(object):
             except:
                 # fallback to standard error
                 warn = "Failed opening the requested log file. Using standard error instead."
-        fmt = self.get('barman', 'log_format') or "%(asctime)s %(name)s %(levelname)s: %(message)s"
+        fmt = self.get('barman', 'log_format') or "%(asctime)s %(name)s [%(process)d] %(levelname)s: %(message)s"
         formatter = logging.Formatter(fmt)
         handler.setFormatter(formatter)
         logging.root.addHandler(handler)

@@ -12,7 +12,7 @@
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		zonar-barman%{pybasever}
 Version:	1.2.1
-Release:	z1%{?dist}
+Release:	z2%{?dist}
 License:	GPLv3
 Group:		Applications/Databases
 Url:		http://www.pgbarman.org/
@@ -59,6 +59,7 @@ mkdir -p %{buildroot}/var/lib/barman/
 mkdir -p %{buildroot}/var/log/barman/
 mkdir -p %{buildroot}%{_mandir}/man1/
 mkdir -p %{buildroot}%{_mandir}/man5/
+mkdir -p %{buildroot}%{_bindir}
 gzip doc/barman.1
 gzip doc/barman.5
 install -pm 644 doc/barman.1.gz %{buildroot}%{_mandir}/man1/barman.1.gz
@@ -67,6 +68,7 @@ install -pm 644 doc/barman.conf %{buildroot}%{_sysconfdir}/barman.conf
 install -pm 644 scripts/barman.bash_completion %{buildroot}%{_sysconfdir}/bash_completion.d/barman
 install -pm 644 barman.cron %{buildroot}%{_sysconfdir}/cron.d/barman
 install -pm 644 barman.logrotate %{buildroot}%{_sysconfdir}/logrotate.d/barman
+install -pm 755 scripts/barman_run_backups %{buildroot}%{_bindir}/barman_run_backups
 touch %{buildroot}/var/log/barman/barman.log
 
 %clean
@@ -84,6 +86,7 @@ rm -rf %{buildroot}
 %attr(700,barman,barman) %dir /var/lib/%{original_name}
 %attr(755,barman,barman) %dir /var/log/%{original_name}
 %attr(600,barman,barman) %ghost /var/log/%{original_name}/%{original_name}.log
+%attr(755,root,root) %{_bindir}/barman_run_backups
 
 %pre
 # puppet should handle creating the barman user and group,

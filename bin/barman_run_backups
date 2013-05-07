@@ -14,7 +14,7 @@ CHECK_STATUS=0
 # NOTE: This is NOT recommended.
 #
 # This can be overriden with the -c switch.
-MAX_CONCURRENT_BACKUPS=1
+MAX_CONCURRENT_BACKUPS=10
 
 # This is the minimum age in seconds for a backup.
 # If the age of the most recent backup for a server is
@@ -22,8 +22,7 @@ MAX_CONCURRENT_BACKUPS=1
 #
 # The default is 604800 seconds, or one week.
 # This can be overriden with the -a switch.
-#MIN_BACKUP_AGE=604800
-MIN_BACKUP_AGE=7200
+MIN_BACKUP_AGE=604800
 
 BACKUP_LIST=()
 LOCK_FILES=()
@@ -33,7 +32,7 @@ function _log {
 LOG_LEVEL=$1
 LOG_MESSAGE=$2
 IFS="$(printf '\n\t')"
-DATE=`date "+%FT%T"`
+DATE=`date "+%FT%T%z"`
 
 for LOG_LINE in $LOG_MESSAGE; do
     echo `printf "%s %s [%s] %s: %s" "$DATE" "$(basename $0)" "$$" "$LOG_LEVEL" "$LOG_LINE"` >> $LOG_FILE
@@ -83,21 +82,20 @@ for SERVER in ${SERVERS[*]}; do
 done
 
 for SERVER in ${SERVERS[*]}; do
+
     LAST_BACKUP=`$BARMAN list-backup $SERVER | head -n 1`
 
     # Skip the server if the most recent backup is in progress or has failed.
     echo $LAST_BACKUP | grep -E -q 'STARTED|FAILED' && continue
 
-    # barman list-backup <server> prints the output in this format:
+    # "barman list-backup <server>" prints the output in this format:
     # <server> <backup_id> - <backup_end_time> - <backup_size> - <wal_size> [ - <status> ]
     # pg-001 20130423T163355 - Tue Apr 23 16:37:41 2013 - Size: 45.0 MiB - WAL Size: 16.0 MiB
-    # What we're looking for is the backup_id, which is YYYYMMDDTHHMMSS
-    # Split up the backup_id and turn it into something we can pass to date
-    # to extract the epoch.
-    #
-    # Note: We don't use the backup_end_time, since the formatting could change in future
-    # barman versions. The backup_id should be consistent, so use it.
 
+    if [ -z "$LAST_BACKUP" ]; then
+        # set to epoch if no prior backup
+        LAST_BACKUP=( "$SERVER 19700101T000000" )
+    fi
     read -a LAST_BACKUP_TIMESTAMP <<< \
         `echo $LAST_BACKUP \
         | awk '{print $2}' \
@@ -112,6 +110,7 @@ for SERVER in ${SERVERS[*]}; do
     if [ $LAST_BACKUP_EPOCH -lt $MIN_BACKUP_EPOCH ]; then
         BACKUP_LIST=( "${BACKUP_LIST[@]}" "$LAST_BACKUP" )
     fi
+
 done
 
 if [ $CHECK_STATUS -eq 1 ]; then
@@ -156,7 +155,7 @@ EOM`
         RETVAL=`$BARMAN backup $SERVER 2>&1`
         if [ $? -ne 0 ]; then
             _log ERROR "backup failed for server $SERVER:"
-            _log ERROR $RETVAL
+            _log ERROR "$RETVAL"
             exit 1
         else
             _log INFO "backup finished for server $SERVER"

@@ -65,6 +65,7 @@ gzip doc/barman.5
 gzip doc/barman_run_backups.1
 install -pm 644 doc/barman.1.gz %{buildroot}%{_mandir}/man1/barman.1.gz
 install -pm 644 doc/barman.5.gz %{buildroot}%{_mandir}/man5/barman.5.gz
+install -pm 644 doc/barman_run_backups.1.gz %{buildroot}%{_mandir}/man1/barman_run_backups.1.gz
 install -pm 644 doc/barman.conf %{buildroot}%{_sysconfdir}/barman.conf
 install -pm 644 scripts/barman.bash_completion %{buildroot}%{_sysconfdir}/bash_completion.d/barman
 install -pm 644 barman.cron %{buildroot}%{_sysconfdir}/cron.d/barman

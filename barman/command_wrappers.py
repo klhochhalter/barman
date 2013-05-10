@@ -152,9 +152,10 @@ class Ssh(object):
         fab.env.host_string = "%s@%s:%s" % (user, server, port)
         fab.env.eagerly_disconnect = True
         fab.env.disable_known_hosts = True
-    def run(self, command):
+        fab.env.keepalive = 30
+    def run(self, command, return_codes_ok=()):
         result = fab.run(command, quiet=True)
-        if result.failed:
+        if result.return_code not in return_codes_ok:
             return result.stdout
         else:
             return result.return_code
@@ -170,5 +171,6 @@ class RsyncPgDataRemote(Ssh):
                    '--exclude=/postmaster.pid'
                    ) + args
         command = " ".join(options)
-        return Ssh.run(self, command)
+        return_codes_ok = (0, 24)
+        return Ssh.run(self, command, return_codes_ok)
 

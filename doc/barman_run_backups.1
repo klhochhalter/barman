@@ -19,7 +19,7 @@ backup and the current time. If this is more than MIN_BACKUP_AGE seconds, the
 script will run a base backup. The default is 604800 seconds, or seven days.
 .TP
 \fB\-c\fR
-The maximum number of concurrent base backups. If the there are more than this number currently running, the script will exit with a status of 0.
+The maximum number of concurrent base backups. If there are more than this number currently running, the script will exit with a status of 0. The default is ten.
 .TP
 \fB\-t\fR
 Run in test mode. This will only print out what barman_run_backups would do, but will not take any action.

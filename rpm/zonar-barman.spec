@@ -98,7 +98,7 @@ rm -rf %{buildroot}
 getent passwd barman > /dev/null || exit 1
 
 %post
-ln -s %{zonar_python_installs}/python-%{pybasever}/bin/barman %{_bindir}/barman
+ln -sf %{zonar_python_installs}/python-%{pybasever}/bin/barman %{_bindir}/barman
 
 %postun
 rm %{_bindir}/barman

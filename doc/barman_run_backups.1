@@ -1,0 +1,45 @@
+.\"
+.TH BARMAN_RUN_BACKUPS "1" "2013-05-10" "Zonar Systems" "User Commands"
+.SH NAME
+barman_run_backups \- run barman backups
+.SH SYNOPSIS
+.B barman_run_backups
+[\fIOPTION\fR]
+.SH DESCRIPTION
+.\" Add any additional description here
+.PP
+Wrapper around \fBbarman backup <hostname>\fR. This is intended to be via cron.
+.TP
+\fB\-v\fR
+Run in verbose mode. All log messages will go to stdout in addition to the log file.
+.TP
+\fB\-a\fR
+Specify the minimum backup age. The miminum backup age is the minimum time between the last base 
+backup and the current time. If this is more than MIN_BACKUP_AGE seconds, the 
+script will run a base backup. The default is 604800 seconds, or seven days.
+.TP
+\fB\-c\fR
+The maximum number of concurrent base backups. If the there are more than this number currently running, the script will exit with a status of 0.
+.TP
+\fB\-t\fR
+Run in test mode. This will only print out what barman_run_backups would do, but will not take any action.
+.TP
+\fB\-s\fR
+Print out some information about the status of base backups.
+.TP
+\fB\-h\fR
+Print a brief help message to stdout.
+.SH AUTHOR
+Kevin Hochhalter <kevin.hochhalter@zonarsystems.com>
+.SH "REPORTING BUGS"
+Report barman_run_backups bugs to kevin.hochhalter@zonarsystems.com
+.SH COPYRIGHT
+Copyright \(co 2013 Zonar Systems, Inc.
+.br
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+.br
+There is NO WARRANTY, to the extent permitted by law.
+.SH "SEE ALSO"
+barman(1), barman(5)

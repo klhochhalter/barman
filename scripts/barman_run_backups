@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# Copyright (C) 2013, Zonar Systems, Inc. and Kevin L Hochhalter
+#
+# This file is part of the Zonar Systems updates to Barman.
+#
+# Barman is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Barman is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Barman.  If not, see <http://www.gnu.org/licenses/>.
+
 RESET_IFS=$IFS
 BARMAN='/usr/bin/barman'
 LOG_FILE='/var/log/barman/barman_run_backups.log'
@@ -66,7 +83,8 @@ while getopts htsva:c: opt; do
             CHECK_STATUS=1
         ;;
         h|H)
-            echo "`basename $0` [-vamts] [-h]"
+            echo "`basename $0` [-vact] [-s] [-h]"
+            echo "see also barman_run_backups(1)"
             exit 0
     esac
 done

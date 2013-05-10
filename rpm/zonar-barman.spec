@@ -62,6 +62,7 @@ mkdir -p %{buildroot}%{_mandir}/man5/
 mkdir -p %{buildroot}%{_bindir}
 gzip doc/barman.1
 gzip doc/barman.5
+gzip doc/barman_run_backups.1
 install -pm 644 doc/barman.1.gz %{buildroot}%{_mandir}/man1/barman.1.gz
 install -pm 644 doc/barman.5.gz %{buildroot}%{_mandir}/man5/barman.5.gz
 install -pm 644 doc/barman.conf %{buildroot}%{_sysconfdir}/barman.conf
@@ -79,6 +80,7 @@ rm -rf %{buildroot}
 %doc INSTALL NEWS README
 %doc %{_mandir}/man1/%{original_name}.1.gz
 %doc %{_mandir}/man5/%{original_name}.5.gz
+%doc %{_mandir}/man1/barman_run_backups.1.gz
 %config(noreplace) %{_sysconfdir}/bash_completion.d/
 %config(noreplace) %{_sysconfdir}/%{original_name}.conf
 %config(noreplace) %{_sysconfdir}/cron.d/%{original_name}
@@ -101,7 +103,7 @@ ln -s %{zonar_python_installs}/python-%{pybasever}/bin/barman %{_bindir}/barman
 rm %{_bindir}/barman
 
 %changelog
-* Wed Mar 10 2013 - Kevin Hochhalter <kevin.hochhalter@zonarsystems.com> 1.2.1-z3
+* Wed May 10 2013 - Kevin Hochhalter <kevin.hochhalter@zonarsystems.com> 1.2.1-z3
 - Set keepalive in Ssh class to 30 seconds.
 - Update run method to allow an arbitrary tuple of valid return codes.
 

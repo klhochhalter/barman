@@ -60,6 +60,7 @@ mkdir -p %{buildroot}/var/log/barman/
 mkdir -p %{buildroot}%{_mandir}/man1/
 mkdir -p %{buildroot}%{_mandir}/man5/
 mkdir -p %{buildroot}%{_bindir}
+ln -sf %{zonar_python_installs}/python-%{pybasever}/bin/barman %{buildroot}%{_bindir}/barman
 gzip doc/barman.1
 gzip doc/barman.5
 gzip doc/barman_run_backups.1
@@ -90,6 +91,7 @@ rm -rf %{buildroot}
 %attr(755,barman,barman) %dir /var/log/%{original_name}
 %attr(600,barman,barman) %ghost /var/log/%{original_name}/%{original_name}.log
 %attr(755,root,root) %{_bindir}/barman_run_backups
+%attr(-,root,root) %{_bindir}/barman
 
 %pre
 # puppet should handle creating the barman user and group,
@@ -97,15 +99,10 @@ rm -rf %{buildroot}
 # user exists.
 getent passwd barman > /dev/null || exit 1
 
-%post
-ln -sf %{zonar_python_installs}/python-%{pybasever}/bin/barman %{_bindir}/barman
-
-%postun
-rm %{_bindir}/barman
-
 %changelog
 * Thu May 16 2013 - Kevin Hochhalter <kevin.hochhalter@zonarsystems.com> 1.2.1-z4
 - Add ssh_host option.
+- Update symlink handling in zonar-barman.spec.
 
 * Wed May 10 2013 - Kevin Hochhalter <kevin.hochhalter@zonarsystems.com> 1.2.1-z3
 - Set keepalive in Ssh class to 30 seconds.

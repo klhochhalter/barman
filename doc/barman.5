@@ -144,7 +144,7 @@ Currently only "auto" is implemented\&.
 .PP
 \fBbasebackups_method (Zonar only)\fR
 .RS 4
-Method used to perform a base backup, specifically how files are rsynced\&. Possible options are "remote_rsync" and "local_rsync_ssh"\&. "remote_rsync" will cause barman to login on the server as the configured ssh user, and rsync from the server to the configured rsync uri\&. The default is "local_rsync_ssh", which is the traditional barman method, just using rsync over ssh to rsync files to the server where barman is running\&. Think of "remote_rsync_ssh" as "push", and "local_rsync_ssh" as "pull"\&.
+Method used to perform a base backup, specifically how files are rsynced\&. Possible options are "remote_rsync" and "local_rsync_ssh"\&. "remote_rsync" will cause barman to login on the server as the configured ssh user, and rsync from the server to the configured rsync uri\&. The default is "local_rsync_ssh", which is the traditional barman method, just using rsync over ssh to rsync files to the server where barman is running\&. Think of "remote_rsync" as "push", and "local_rsync_ssh" as "pull"\&.
 .RE
 .PP
 \fBbasebackups_rsync_uri (Zonar only)\fR
@@ -155,6 +155,11 @@ The rsync uri to use when performing a "remote_rsync" base backup\&. Use the for
 \fBssh_user (Zonar only)\fR
 .RS 4
 The user that barman will use to login on the remote database server when performing a "remote_rsync" basebackup\&. The default is postgres\&.
+.RE
+.PP
+\fBssh_host (Zonar only)\fR
+.RS 4
+The host that barman will login on when performing a "remote_rsync" basebackup\&. This can be the same as the server name, or the host specified in the ssh_command option or conninfo\&. Can also be an ip address\&. This is required if the basebackups_method is "remote_rsync"\&. There is no default\&.
 .RE
 .SH "HOOK SCRIPTS"
 .sp

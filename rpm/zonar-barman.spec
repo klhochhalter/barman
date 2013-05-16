@@ -12,7 +12,7 @@
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		zonar-barman%{pybasever}
 Version:	1.2.1
-Release:	z3%{?dist}
+Release:	z4%{?dist}
 License:	GPLv3
 Group:		Applications/Databases
 Url:		http://www.pgbarman.org/
@@ -104,6 +104,9 @@ ln -sf %{zonar_python_installs}/python-%{pybasever}/bin/barman %{_bindir}/barman
 rm %{_bindir}/barman
 
 %changelog
+* Thu May 16 2013 - Kevin Hochhalter <kevin.hochhalter@zonarsystems.com> 1.2.1-z4
+- Add ssh_host option.
+
 * Wed May 10 2013 - Kevin Hochhalter <kevin.hochhalter@zonarsystems.com> 1.2.1-z3
 - Set keepalive in Ssh class to 30 seconds.
 - Update run method to allow an arbitrary tuple of valid return codes.

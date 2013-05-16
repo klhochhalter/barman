@@ -52,6 +52,7 @@ class Server(object):
         self.configuration_files = None
         self.enforce_retention_policies = False
         self.ssh_user = config.ssh_user
+        self.ssh_host = config.ssh_host
         self.basebackups_rsync_uri = config.basebackups_rsync_uri
         self.basebackups_method = config.basebackups_method
         

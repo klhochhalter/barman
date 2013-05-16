@@ -41,7 +41,7 @@ class Server(object):
         'custom_decompression_filter', 'retention_policy_mode', 'retention_policy',
         'wal_retention_policy', 'pre_backup_script', 'post_backup_script',
         'minimum_redundancy', 'basebackups_method', 'basebackups_rsync_uri',
-        'ssh_user',
+        'ssh_user', 'ssh_host',
     ]
 
     BARMAN_KEYS = ['compression', 'custom_compression_filter',

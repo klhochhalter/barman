@@ -865,7 +865,7 @@ class BackupManager(object):
         '''
         backup_dest = os.path.join(backup_info.get_basebackup_directory(), 'pgdata')
         if self.server.basebackups_method == 'remote_rsync':
-            rsync = RsyncPgDataRemote(server=self.config.name, user=self.server.ssh_user)
+            rsync = RsyncPgDataRemote(server=self.server.ssh_host, user=self.server.ssh_user)
             source = "%s/" % (backup_info.pgdata)
             destination = "%s/%s/%s/" % (self.server.basebackups_rsync_uri, backup_info.backup_id, 'pgdata')
             retval = rsync(source, destination)
